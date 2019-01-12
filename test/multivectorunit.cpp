@@ -33,7 +33,6 @@ void multivector_unit::empty_multivectors() {
     IT_ASSERT(a.empty());
     IT_ASSERT(a.size() == 0);
     IT_ASSERT(a.root().empty());
-
 }
 
 void multivector_unit::adding() {
