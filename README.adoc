@@ -3,6 +3,8 @@
 :toc:
 :toc-placement!:
 
+image:https://travis-ci.org/wythe/multivector.svg?branch=master["Build Status", link="https://travis-ci.org/wythe/multivector"]
+
 == Introduction
 
 A multivector is a a generic container that behaves just like a `std::vector`
