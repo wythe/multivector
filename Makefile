@@ -1,8 +1,13 @@
-.PHONY: tags perf
+.PHONY: tags perf config
+
 
 all:
 	mkdir -p build
 	cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cd .. && make -C build -j12
+
+config:
+	mkdir -p build
+	cd build && cmake -DCMAKE_BUILD_TYPE=Release ..
 
 debug:
 	mkdir -p build
@@ -17,6 +22,8 @@ clean:
 
 check: all
 	make CTEST_OUTPUT_ON_FAILURE=1 -C build test
+
+test: check
 
 tags: 
 	@echo Making tags...
