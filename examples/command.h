@@ -106,10 +106,6 @@ void help() const
 
 void version()
 {
-#if 0
-    std::cout << std::endl << cmd << " version " << IT_VERSION_STRING << std::endl << std::endl << "  " <<
-        IT_COPYRIGHT << std::endl << std::endl;
-#endif
 }
 
 
@@ -136,11 +132,9 @@ void parse(int argc, char * argv[])
         if (i != argc-1) cl+= ' ';
     }
     cl += ' ';
-    //PRINT("parse: " << cl);
 
     for (auto ch : cl)
     {
-        //IT_WARN("ch = " << ch);
         switch (state)
         {
             case Idle: // looking for the first character
@@ -158,15 +152,15 @@ void parse(int argc, char * argv[])
                 switch (ch)
                 {
                     case '-' : state = LongOptionStart; break;
-                    case ' ' : IT_PANIC("illegal \"- \" sequence");
+                    case ' ' : PANIC("illegal \"- \" sequence");
                     default :
                         if (isgraph(ch)) // found short option
                         {
                             it = std::find_if(opts.begin(), opts.end(),
                                 [&](Option & o){ return o.short_opt == ch; });
-                            if (it == opts.end()) IT_PANIC("invalid option: " << ch);
+                            if (it == opts.end()) PANIC("invalid option: " << ch);
 
-                            if (it->present) IT_PANIC("option " << ch << " already present");
+                            if (it->present) PANIC("option " << ch << " already present");
                             it->present = true;
                             // do it!  We may want to save the actions until parsing is complete, in case
                             // there are errors later in command line
@@ -182,15 +176,15 @@ void parse(int argc, char * argv[])
             case ShortContinue: // possibly more short opts
                 switch (ch)
                 {
-                    case '-' : IT_PANIC("illegal \"-\" character");
+                    case '-' : PANIC("illegal \"-\" character");
                     case ' ' : state = Idle;
                     default :
                         if (isgraph(ch)) // found short option
                         {
                             it = std::find_if(opts.begin(), opts.end(),
                                 [&](Option & o){ return o.short_opt == ch; });
-                            if (it == opts.end()) IT_PANIC("invalid option: " << ch);
-                            if (it->present) IT_PANIC("option " << ch << " already present");
+                            if (it == opts.end()) PANIC("invalid option: " << ch);
+                            if (it->present) PANIC("option " << ch << " already present");
                             it->present = true;
                             if (it->flag) it->binary_action();
                             else state = ValueStart;
@@ -202,7 +196,7 @@ void parse(int argc, char * argv[])
                 {
                     case ' ': break;
                     case '\"':
-                        IT_WARN("setting to quoted value");
+                        WARN("setting to quoted value");
                         value.clear();
                         state = QuotedValue;
                         break;
@@ -240,7 +234,7 @@ void parse(int argc, char * argv[])
                     long_opt += ch;
                     state = LongOption;
                 } else {
-                    IT_PANIC("illegal \"--" << ch <<  "\" sequence");
+                    PANIC("illegal \"--" << ch <<  "\" sequence");
                 }
                 break;
 
@@ -251,7 +245,7 @@ void parse(int argc, char * argv[])
                     case ' ' :
                         it = std::find_if(opts.begin(), opts.end(), [&](Option & o)
                             { return o.name == long_opt; });
-                        if (it == opts.end()) IT_PANIC("invalid option: " << long_opt);
+                        if (it == opts.end()) PANIC("invalid option: " << long_opt);
                         it->present = true;
                         if (it->flag)
                         {
@@ -263,9 +257,9 @@ void parse(int argc, char * argv[])
                     case '=' :
                         it = std::find_if(opts.begin(), opts.end(), [&](Option & o)
                             { return o.name == long_opt; });
-                        if (it == opts.end()) IT_PANIC("invalid option: " << long_opt);
+                        if (it == opts.end()) PANIC("invalid option: " << long_opt);
                         it->present = true;
-                        if (it->flag) IT_PANIC("value not expected for option: " << long_opt);
+                        if (it->flag) PANIC("value not expected for option: " << long_opt);
                         state = ValueStart;
                     default :
                         long_opt += ch;
@@ -282,7 +276,7 @@ void parse(int argc, char * argv[])
                         state = ValueStart;
                         break;
                     default:
-                        IT_PANIC("expected '=' after \"" << long_opt << "\" option");
+                        PANIC("expected '=' after \"" << long_opt << "\" option");
                 }
                 break;
             case TargetStart :
@@ -309,7 +303,7 @@ void parse(int argc, char * argv[])
                 }
                 break;
             default:
-                IT_PANIC("panic!");
+                PANIC("panic!");
         }
     }
 }
