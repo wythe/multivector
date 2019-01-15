@@ -70,31 +70,9 @@ So the `end()` of the `{ 10, 11, 12 }` vector is comparable (and not equal) to t
 
 Cursors can also navigate up the tree using the `parent()` member function.
 
-WARNING: The implementation currently includes a _subset_ of the features found `std::vector`
-and is described below.  See #4.
+WARNING: The implementation currently includes a _subset_ of the features found `std::vector`.
 
 The multivector is a totally ordered container class for hierarchies.
-It supports the following vector operations:
-
-[source,c++]
-----
-item_reference operator[](int index) 
-const_item_reference operator[](int index) const 
-
-void clear() 
-void pop_back() 
-
-bool empty() const 
-
-size_t size() const 
-cursor begin() 
-const_cursor begin() const 
-const_cursor cbegin() const 
-
-cursor end() 
-const_cursor end() const 
-const_cursor cend() const 
-----
 
 There is an additional constructor that takes a cursor:
 
@@ -121,42 +99,13 @@ There are three kinds of cursors, described in the following sections.
 
 === cursor
 
-In addition to normal random-access iterator operations, cursors provide the
-following functions:
-
-Here are vector operations that are currently supported for cursors:
-
-[source,c++]
-----
-    cursor begin() 
-    cursor begin() const 
-    cursor cbegin() const 
-    cursor end() 
-    cursor end() const 
-    cursor cend() const 
-    
-    bool empty() const 
-    size_t size() const 
-
-    void reserve(size_t n)
-
-    void clear()
-    void pop_back()
-
-    // emplace a value at the end and return a cursor to it.
-    template <class... Args>
-    cursor emplace(Args&&... args) 
-
-    // emplace a value at the end.
-    template <class... Args>
-    void emplace_back(Args&&... args) 
-----
+In addition to normal random-access iterator operations, cursors the
+`std::vector` member functions.
 
 Additional cursor navigation operations are available:
 
 [source,c++]
 ----
-// return a child cursor 
 bool is_first_child() const // return true if this is the first child 
 cursor parent() const // return a cursor to parent
 bool is_root() const // true if this is the root cursor
@@ -204,7 +153,7 @@ The above code segment could be written more concisely using the
 auto last = wythe::to_ascending(--m.begin().begin().end());
 ----
 
-`ascending_cursor` supports the following vector operations:
+`ascending_cursor` supports the following subset of vector operations:
 
 [source,c++]
 ----
