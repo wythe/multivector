@@ -7,11 +7,11 @@ image:https://travis-ci.org/wythe/multivector.svg?branch=master["Build Status", 
 
 == Introduction
 
-A multivector is a a generic container that behaves just like a `std::vector`
+A _multivector_ is a a generic container that behaves just like a `std::vector`
 except its iterators also behave just like `std::vector`.
 And since `std::vector` is used in the underlying representation, we can make
 hierarchies that benefit from both cache friendly locality of reference and
-C++11 move semantics.
+move semantics provided by modern C++.
 
 A multivector is ideally suited to represent trees that we often encounter in
 software:
@@ -51,12 +51,12 @@ resulting in:
 ----
 
 There are 3 vectors in the above multivector:
-1, 2, and 3; 10, 11, and 12; and 100.
+{ 1, 2, 3 }, { 10, 11, 12 }, and { 100 }.
 
-12 is the parent of 100, 2 is the parent of 10, and the parent of 1 is
-considered the *root*.
+The _root_ is the parent of { 1, 2, 3 }, 2 is the parent of { 10, 11, 12 }, 
+and 12 is the parent of { 100 }.
 
-`iterators` for multivectors are called `cursors` and are the means of navigation.
+_Iterators_ for multivectors are called _cursors_ and are the means of navigation.
 They are random access within the same vector.
 Unlike regular iterators they have the vector functions you would expect:
 `begin()`, `end()`, `emplace()`, etc.
@@ -65,11 +65,13 @@ For cursors, `begin()`  and `end()` behave like `std::vector` iterators.
 In multivectors, however, there can be many different `begin()` and `end()` cursors.
 The above example has 3 each.
 All cursors that are part of the same multivector are comparable.
-So the `end()` of the `{10, 11, 12}` vector is comparable (and not equal) to the
-`begin()` of the `{100}` vector.
+So the `end()` of the `{ 10, 11, 12 }` vector is comparable (and not equal) to the
+`begin()` of the `{ 100 }` vector.
 
-The implementation currently includes a **subset** of the features found `std::vector`
-and is described below. 
+Cursors can also navigate up the tree using the `parent()` member function.
+
+WARNING: The implementation currently includes a _subset_ of the features found `std::vector`
+and is described below.  See #4.
 
 The multivector is a totally ordered container class for hierarchies.
 It supports the following vector operations:
