@@ -52,8 +52,11 @@ resulting in:
 
 There are 3 vectors in the above multivector:
 { 1, 2, 3 }, { 10, 11, 12 }, and { 100 }.
+Let's call them _subvectors_.
 
-2 is the parent of { 10, 11, 12 }, and 12 is the parent of { 100 }.
+In tree terminology, items within subvectors are _siblings_.
+
+2 is the _parent_ of { 10, 11, 12 }, and 12 is the parent of { 100 }.
 Since this is a tree structure, the parent of { 1, 2, 3 } is considered the _root_.
 
 _Iterators_ for multivectors are called _cursors_ and are the means of navigation.
@@ -344,7 +347,7 @@ Hopefully, you will find it usefull too.
 
 But admittedly there are some questionable design decisions.
 And some of the functions included seem a bit random.
-Pull requests are welcome, and hopefully together we can make this more robust.
+Pull requests are welcome, and hopefully together we can make this more useful.
 
 
 == References
