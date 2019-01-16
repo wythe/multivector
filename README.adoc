@@ -346,6 +346,7 @@ system.
 Hopefully, you will find it usefull too.
 
 But admittedly there are some questionable design decisions.
+Not all vector functions are supported yet.
 And some of the functions included seem a bit random.
 Pull requests are welcome, and hopefully together we can make this more useful.
 
