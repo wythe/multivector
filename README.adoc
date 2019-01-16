@@ -7,15 +7,15 @@ image:https://travis-ci.org/wythe/multivector.svg?branch=master["Build Status", 
 
 == Introduction
 
-A multivector is a a generic container that behaves just like a `std::vector`
+A _multivector_ is a a generic container that behaves just like a `std::vector`
 except its iterators also behave just like `std::vector`.
 And since `std::vector` is used in the underlying representation, we can make
 hierarchies that benefit from both cache friendly locality of reference and
-C++11 move semantics.
+move semantics provided by modern C++.
 
 A multivector is ideally suited to represent trees that we often encounter in
 software:
-document object models, window hierarchies, telecom messages, configurators, 
+document object models, window hierarchies, protocol messages, configurators, 
 filesystems, online shopping carts, multiple choice tests, user lists, etc. 
 
 toc::[]
@@ -51,48 +51,31 @@ resulting in:
 ----
 
 There are 3 vectors in the above multivector:
-1, 2, and 3; 10, 11, and 12; and 100.
+{ 1, 2, 3 }, { 10, 11, 12 }, and { 100 }.
+Let's call them _subvectors_.
 
-12 is the parent of 100, 2 is the parent of 10, and the parent of 1 is
-considered the *root*.
+In tree terminology, items within subvectors are _siblings_.
 
-`iterators` for multivectors are called `cursors` and are the means of navigation.
+2 is the _parent_ of { 10, 11, 12 }, and 12 is the parent of { 100 }.
+Since this is a tree structure, the parent of { 1, 2, 3 } is considered the _root_.
+
+_Iterators_ for multivectors are called _cursors_ and are the means of navigation.
 They are random access within the same vector.
 Unlike regular iterators they have the vector functions you would expect:
 `begin()`, `end()`, `emplace()`, etc.
 
 For cursors, `begin()`  and `end()` behave like `std::vector` iterators.
-In multivectors, however, there can be many different `begin()` and `end()` cursors.
+Multivectors, however, can have many different `begin()` and `end()` cursors.
 The above example has 3 each.
 All cursors that are part of the same multivector are comparable.
-So the `end()` of the `{10, 11, 12}` vector is comparable (and not equal) to the
-`begin()` of the `{100}` vector.
+So the `end()` of the `{ 10, 11, 12 }` vector is comparable (and not equal) to the
+`begin()` of the `{ 100 }` vector.
 
-The implementation currently includes a **subset** of the features found `std::vector`
-and is described below. 
+Cursors can also navigate up the tree using the `parent()` member function.
+
+WARNING: The implementation currently includes a _subset_ of the features found `std::vector`.
 
 The multivector is a totally ordered container class for hierarchies.
-It supports the following vector operations:
-
-[source,c++]
-----
-item_reference operator[](int index) 
-const_item_reference operator[](int index) const 
-
-void clear() 
-void pop_back() 
-
-bool empty() const 
-
-size_t size() const 
-cursor begin() 
-const_cursor begin() const 
-const_cursor cbegin() const 
-
-cursor end() 
-const_cursor end() const 
-const_cursor cend() const 
-----
 
 There is an additional constructor that takes a cursor:
 
@@ -119,42 +102,13 @@ There are three kinds of cursors, described in the following sections.
 
 === cursor
 
-In addition to normal random-access iterator operations, cursors provide the
-following functions:
-
-Here are vector operations that are currently supported for cursors:
-
-[source,c++]
-----
-    cursor begin() 
-    cursor begin() const 
-    cursor cbegin() const 
-    cursor end() 
-    cursor end() const 
-    cursor cend() const 
-    
-    bool empty() const 
-    size_t size() const 
-
-    void reserve(size_t n)
-
-    void clear()
-    void pop_back()
-
-    // emplace a value at the end and return a cursor to it.
-    template <class... Args>
-    cursor emplace(Args&&... args) 
-
-    // emplace a value at the end.
-    template <class... Args>
-    void emplace_back(Args&&... args) 
-----
+In addition to normal random-access iterator operations, cursors also support the
+`std::vector` member functions.
 
 Additional cursor navigation operations are available:
 
 [source,c++]
 ----
-// return a child cursor 
 bool is_first_child() const // return true if this is the first child 
 cursor parent() const // return a cursor to parent
 bool is_root() const // true if this is the root cursor
@@ -202,7 +156,7 @@ The above code segment could be written more concisely using the
 auto last = wythe::to_ascending(--m.begin().begin().end());
 ----
 
-`ascending_cursor` supports the following vector operations:
+`ascending_cursor` supports the following subset of vector operations:
 
 [source,c++]
 ----
@@ -383,6 +337,20 @@ void append(Cursor parent, ConstCursor from_parent)
 
 Append (i.e., copy) the children of one cursor to the children of another.
 The the children will be appended to any existing children.
+
+== Caveats
+
+I originally wrote this as a purpose built data structure for a project.
+And it turned out to be tremendous simplification over the previous node based
+system.
+Hopefully, you will find it usefull too.
+
+But admittedly there are some questionable design decisions.
+Not all vector functions are supported yet.
+And some of the functions included seem a bit random.
+
+Pull requests are welcome, and hopefully together we can make this more useful.
+
 
 == References
 
