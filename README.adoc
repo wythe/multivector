@@ -15,7 +15,7 @@ move semantics provided by modern C++.
 
 A multivector is ideally suited to represent trees that we often encounter in
 software:
-document object models, window hierarchies, telecom messages, configurators, 
+document object models, window hierarchies, protocol messages, configurators, 
 filesystems, online shopping carts, multiple choice tests, user lists, etc. 
 
 toc::[]
@@ -53,8 +53,8 @@ resulting in:
 There are 3 vectors in the above multivector:
 { 1, 2, 3 }, { 10, 11, 12 }, and { 100 }.
 
-The _root_ is the parent of { 1, 2, 3 }, 2 is the parent of { 10, 11, 12 }, 
-and 12 is the parent of { 100 }.
+2 is the parent of { 10, 11, 12 }, and 12 is the parent of { 100 }.
+Since this is a tree structure, the parent of { 1, 2, 3 } is considered the _root_.
 
 _Iterators_ for multivectors are called _cursors_ and are the means of navigation.
 They are random access within the same vector.
@@ -62,7 +62,7 @@ Unlike regular iterators they have the vector functions you would expect:
 `begin()`, `end()`, `emplace()`, etc.
 
 For cursors, `begin()`  and `end()` behave like `std::vector` iterators.
-In multivectors, however, there can be many different `begin()` and `end()` cursors.
+Multivectors, however, can have many different `begin()` and `end()` cursors.
 The above example has 3 each.
 All cursors that are part of the same multivector are comparable.
 So the `end()` of the `{ 10, 11, 12 }` vector is comparable (and not equal) to the
@@ -99,7 +99,7 @@ There are three kinds of cursors, described in the following sections.
 
 === cursor
 
-In addition to normal random-access iterator operations, cursors the
+In addition to normal random-access iterator operations, cursors also support the
 `std::vector` member functions.
 
 Additional cursor navigation operations are available:
@@ -334,6 +334,18 @@ void append(Cursor parent, ConstCursor from_parent)
 
 Append (i.e., copy) the children of one cursor to the children of another.
 The the children will be appended to any existing children.
+
+== Caveats
+
+I originally wrote this as a purpose built data structure for a project.
+And it turned out to be tremendous simplification over the previous node based
+system.
+Hopefully, you will find it usefull too.
+
+But admittedly there are some questionable design decisions.
+And some of the functions included seem a bit random.
+Pull requests are welcome, and hopefully together we can make this more robust.
+
 
 == References
 
