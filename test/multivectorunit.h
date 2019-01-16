@@ -19,8 +19,8 @@ class multivector_unit
         ut.add(&multivector_unit::moving);
         ut.add(&multivector_unit::linear);
         ut.add(&multivector_unit::promote);
-        ut.add(&multivector_unit::ascending);
-        ut.add(&multivector_unit::ascending2);
+        ut.add(&multivector_unit::precursor);
+        ut.add(&multivector_unit::precursor2);
         ut.add(&multivector_unit::append_children);
     }
 
@@ -36,7 +36,7 @@ class multivector_unit
     void moving();
     void linear();
     void promote();
-    void ascending();
-    void ascending2();
+    void precursor();
+    void precursor2();
     void append_children();
 };

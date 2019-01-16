@@ -93,7 +93,7 @@ void iterate() {
 
     std::cout << "\nreverse cursor over nodes from tree[5][7][9] on up:\n";
     auto s = --(((tree.begin() + 5).begin() + 7).end());
-    for (auto i = wythe::to_ascending(s); !i.is_root(); ++i) std::cout << *i << "\n";
+    for (auto i = wythe::to_precursor(s); !i.is_root(); ++i) std::cout << *i << "\n";
 }
 
 void basics() {

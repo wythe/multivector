@@ -428,9 +428,9 @@ void multivector_unit::promote() {
     }
 }
 
-void multivector_unit::ascending() {
+void multivector_unit::precursor() {
     auto m = wythe::multivector<int>{1, {10, { 100, 101, 102}}, 2, 3, 4};
-    auto last = wythe::to_ascending(--m.end());
+    auto last = wythe::to_precursor(--m.end());
     IT_ASSERT_MSG(*last, *last == 4);
     std::ostringstream os;
     while (!last.is_root()) {
@@ -442,17 +442,17 @@ void multivector_unit::ascending() {
 
 }
 
-void multivector_unit::ascending2() {
+void multivector_unit::precursor2() {
     std::ostringstream os;
     auto m = wythe::multivector<int>{1, {10, { 100, 101, 102}}, 2, 3, 4};
     
     auto n = m.root().begin().begin().end();                // n points to one past 102
     --n;                                                    // n points to 102
     IT_ASSERT_MSG(*n, *n == 102);
-    auto last = wythe::multivector<int>::ascending_cursor(n); // convert to an ascending cursor
+    auto last = wythe::multivector<int>::precursor(n); // convert to an precursor
     // last points to 102
     IT_ASSERT_MSG(*last, *last == 102);
-    auto x = wythe::to_ascending(--m.begin().begin().end());
+    auto x = wythe::to_precursor(--m.begin().begin().end());
     IT_ASSERT(*x == 102);
     IT_ASSERT(last == x);
     while (!last.is_root()) {

@@ -94,6 +94,8 @@ There are no dependencies other than the STL.
 
 Building is only required to run the tests and examples.
 
+Compilation times will not be noticably impacted when used in your own projects.
+
 == Cursors
 
 Cursors share both the properties of `std::vector` and a std::vector's iterator.
@@ -118,9 +120,9 @@ Cursor validity is similar to that of vectors.
 If a vector gets resized, then all its cursors are invalidated.
 But any parent cursor is still valid.
 
-=== ascending_cursor
+=== precursor
 
-An ascending cursor is a forward cursor.
+A precursor is a forward cursor.
 `operator++` just goes up and to the left until the root.
 
 For example:
@@ -130,7 +132,7 @@ For example:
 auto m = wythe::multivector<int>{1, {10, { 100, 101, 102}}, 2, 3, 4};
 auto n = m.begin().begin().end();  // n points to one past 102
 --n;                               // n points to 102
-auto last = wythe::multivector<int>::ascending_cursor(n); // convert to an ascending cursor
+auto last = wythe::multivector<int>::precursor(n); // convert to a precursor
 
 while (!last.is_root()) {
     std::cout << *last << '\n';
@@ -149,14 +151,14 @@ will print out
 ----
 
 The above code segment could be written more concisely using the
-`to_ascending()` function:
+`to_precursor()` function:
 
 [source,c++]
 ----
-auto last = wythe::to_ascending(--m.begin().begin().end());
+auto last = wythe::to_precursor(--m.begin().begin().end());
 ----
 
-`ascending_cursor` supports the following subset of vector operations:
+`precursor` currently supports the following subset of vector operations:
 
 [source,c++]
 ----
@@ -168,7 +170,7 @@ cursor begin() const
 cursor cbegin() const
 ----
 
-Additional ascending cursor operations:
+Additional precursor operations:
 
 [source,c++]
 ----
@@ -312,11 +314,15 @@ Replace the last child with the children of the last child.
 This should be rewritten to not be so specific.
 Perhaps a `detach()` ability that removes a subtree as a multivector.
 
-=== to_ascending
+=== to_precursor
 
-`inline typename Cursor::ascending_cursor_type to_ascending(Cursor parent)`
+[source,c++]
+----
+template <typename Cursor>
+inline typename Cursor::precursor_type to_precursor(Cursor c)
+----
 
-Convert a cursor to an ascending cursor.
+Convert a cursor to precursor.
 
 === to_linear
 

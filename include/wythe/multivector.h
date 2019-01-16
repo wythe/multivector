@@ -22,9 +22,9 @@ struct item;
 template <typename ValueType, bool is_const_iterator>    
 struct linear_cursor_base;
 
-// forward declare ascending cursor
+// forward declare precursor
 template <typename ValueType, bool is_const_cursor>    
-struct ascending_cursor_base;
+struct precursor_base;
 
 // Random Access (among siblings)
 template <typename ValueType, bool is_const_cursor>
@@ -47,10 +47,10 @@ struct cursor_base : public std::iterator<std::bidirectional_iterator_tag, Value
     typedef cursor_type * cursor_pointer;
     typedef const cursor_type & const_cursor_reference;
 
-    typedef ascending_cursor_base<ValueType, is_const_cursor> ascending_cursor_type;
-    typedef ascending_cursor_type & ascending_cursor_reference;
-    typedef ascending_cursor_type * ascending_cursor_pointer;
-    typedef const ascending_cursor_type & const_ascending_cursor_reference;
+    typedef precursor_base<ValueType, is_const_cursor> precursor_type;
+    typedef precursor_type & precursor_reference;
+    typedef precursor_type * precursor_pointer;
+    typedef const precursor_type & const_precursor_reference;
 
     typedef linear_cursor_base<ValueType, is_const_cursor> linear_type;
 
@@ -58,7 +58,7 @@ struct cursor_base : public std::iterator<std::bidirectional_iterator_tag, Value
 
     // constructors
     cursor_base() : v(nullptr), it_(nullptr) {}
-    cursor_base(ascending_cursor_reference b) : it_(b.it_) {
+    cursor_base(precursor_reference b) : it_(b.it_) {
         v = &b.it_->parent_item()->nodes_;
     }
     cursor_base(const cursor_base<ValueType, false>& b) : v(b.v), it_(b.it_) {}
@@ -166,7 +166,7 @@ struct cursor_base : public std::iterator<std::bidirectional_iterator_tag, Value
 // Forward iterator
 // operator++ just goes up and to the left until the root.
 template <typename ValueType, bool is_const_cursor>    
-struct ascending_cursor_base : public std::iterator<std::forward_iterator_tag, ValueType> {
+struct precursor_base : public std::iterator<std::forward_iterator_tag, ValueType> {
     typedef ValueType value_type;
     typedef item<ValueType> item_type;
 
@@ -181,18 +181,18 @@ struct ascending_cursor_base : public std::iterator<std::forward_iterator_tag, V
     typedef cursor_type * cursor_pointer;
     typedef const cursor_type & const_cursor_reference;
 
-    typedef ascending_cursor_base ascending_cursor_type;
-    typedef ascending_cursor_type & ascending_cursor_reference;
-    typedef ascending_cursor_type * ascending_cursor_pointer;
-    typedef const ascending_cursor_type & const_ascending_cursor_reference;
+    typedef precursor_base precursor_type;
+    typedef precursor_type & precursor_reference;
+    typedef precursor_type * precursor_pointer;
+    typedef const precursor_type & const_precursor_reference;
 
     typedef int difference_type;
 
     // constructors
-    ascending_cursor_base() {}
-    ascending_cursor_base(cursor_reference b) : it_(b.it_) {}
-    ascending_cursor_base(const ascending_cursor_base<ValueType, false>& b) : it_(b.it_) {}
-    ascending_cursor_base(const item_pointer it) : it_{it} {}
+    precursor_base() {}
+    precursor_base(cursor_reference b) : it_(b.it_) {}
+    precursor_base(const precursor_base<ValueType, false>& b) : it_(b.it_) {}
+    precursor_base(const item_pointer it) : it_{it} {}
 
     // cursor operations
     reference operator*() const { return it_->value; }
@@ -201,21 +201,21 @@ struct ascending_cursor_base : public std::iterator<std::forward_iterator_tag, V
     item_reference item_ref() const { return *it_; }
     item_pointer item_ptr() const { return &(*it_); }
 
-    ascending_cursor_reference operator++() {
+    precursor_reference operator++() {
         if (it_->parent == 0) --it_;
         else it_ = it_->parent;
         return *this;
     }
 
-    ascending_cursor_type operator++(int) {
-        ascending_cursor_base temp=*this;
+    precursor_type operator++(int) {
+        precursor_base temp=*this;
         ++*this;
         return temp;
     }
 
-    bool operator==(const_ascending_cursor_reference it) const { return it_ == it.it_; }
+    bool operator==(const_precursor_reference it) const { return it_ == it.it_; }
 
-    bool operator!=(const_ascending_cursor_reference it) const { return !operator==(it); }
+    bool operator!=(const_precursor_reference it) const { return !operator==(it); }
 
     // cursor specific operations
     bool empty() const { return it_->empty(); }
@@ -225,7 +225,7 @@ struct ascending_cursor_base : public std::iterator<std::forward_iterator_tag, V
     cursor_type cbegin() const { return it_->begin(); }
     bool is_root() const { return it_->is_root(); }
 
-    friend struct ascending_cursor_base<ValueType, false>;
+    friend struct precursor_base<ValueType, false>;
 
     item_pointer it_;
 };
@@ -496,8 +496,8 @@ struct multivector {
 
     typedef cursor_base<value_type, false> cursor;
     typedef cursor_base<value_type, true> const_cursor;
-    typedef ascending_cursor_base<value_type, false> ascending_cursor;
-    typedef ascending_cursor_base<value_type, true> const_ascending_cursor;
+    typedef precursor_base<value_type, false> precursor;
+    typedef precursor_base<value_type, true> const_precursor;
     typedef linear_cursor_base<value_type, false> linear_cursor;
     typedef linear_cursor_base<value_type, true> const_linear_cursor;
 
@@ -665,7 +665,7 @@ Cursor get_root(Cursor start) {
     while (!start.is_root()) start = start.parent();
     return start;
 #else
-    auto r = typename Cursor::ascending_cursor_type(start);
+    auto r = typename Cursor::precursor_type(start);
     while (!r.is_root()) ++r;
     return r;
 #endif
@@ -674,7 +674,7 @@ Cursor get_root(Cursor start) {
 // return the previous cursor, either a sibling or parent
 template <typename Cursor>
 Cursor previous(Cursor self) {
-    auto r = typename Cursor::ascending_cursor_type(self);
+    auto r = typename Cursor::precursor_type(self);
     ++r;
     return r;
 }
@@ -814,7 +814,7 @@ inline void promote_last(Cursor parent) {
 }
 
 template <typename Cursor>
-inline typename Cursor::ascending_cursor_type to_ascending(Cursor c) {
+inline typename Cursor::precursor_type to_precursor(Cursor c) {
     return c;
 }
 
